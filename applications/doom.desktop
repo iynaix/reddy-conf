@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Doom
+Comment=Doom Application
+Exec=/home/reddy/.config/emacs/bin/./doom run
+Icon=~/.local/share/applications/emacs.svg
+Type=Application
+Categories=Utility;Development;TextEditor;
+
