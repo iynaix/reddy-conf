@@ -1,15 +1,12 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ config, pkgs, ... }:
-
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
-
+  config,
+  pkgs,
+  user,
+  ...
+}: {
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -30,7 +27,7 @@
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_IN";
-  
+
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_IN";
     LC_IDENTIFICATION = "en_IN";
@@ -50,16 +47,16 @@
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.reddy = {
+  users.users.${user} = {
     isNormalUser = true;
-    description = "reddy";
-    extraGroups = [ "networkmanager" "wheel" "audio" "vboxusers"];
+    description = user;
+    extraGroups = ["networkmanager" "wheel" "audio" "vboxusers"];
     packages = with pkgs; [];
   };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-  
+
   #shell
   # zsh
   programs.zsh.enable = true;
@@ -67,23 +64,22 @@
   programs.zsh.ohMyZsh.theme = "fishy";
   users.defaultUserShell = pkgs.zsh;
   programs.zsh.autosuggestions.enable = true;
-  
+
   # file system
-  fileSystems."/drives/freeze" =
-  { device = "/dev/disk/by-uuid/F21C2B081C2AC805";
-  fsType = "ntfs-3g";
+  fileSystems."/drives/freeze" = {
+    device = "/dev/disk/by-uuid/F21C2B081C2AC805";
+    fsType = "ntfs-3g";
   };
 
   # sound
   security.rtkit.enable = true;
   services.pipewire = {
-  enable = true;
-  alsa.enable = true;
-  alsa.support32Bit = true;
-  pulse.enable = true;
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
   };
   hardware.pulseaudio.enable = false;
-
 
   # display manager
   services.xserver.enable = true;
@@ -91,22 +87,22 @@
 
   # hyprland
   programs.hyprland = {
-  enable = true;
-  xwayland.enable = true;
+    enable = true;
+    xwayland.enable = true;
   };
-  
+
   #env var
   environment.sessionVariables = {
-  WLR_MO_HARDWARE_CURSOR = "1";
-  NIXOS_OZONE_WL = "1";
+    WLR_MO_HARDWARE_CURSOR = "1";
+    NIXOS_OZONE_WL = "1";
   };
 
   xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk];
   hardware.opengl.enable = true;
   # flakes
-  
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  nix.settings.experimental-features = ["nix-command" "flakes"];
 
   #vbox
   virtualisation.virtualbox.host.enable = true;
@@ -115,42 +111,42 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
-     neovim
-     emacs
-     kitty
-     swww
-     rofi
-     mako
-     firefox
-     discord
-     curl
-     gcc 
-     python311
-     ripgrep
-     bashmount
-     xfce.thunar
-     wineWowPackages.wayland
-     proxychains
-     networkmanagerapplet
-     pfetch
-     multimarkdown
-     fd
-     shellcheck
-     ranger
-     feh
-     waybar
-     cmus
-     grim
-     zip 
-     unzip
-     cava
-     git
-     pavucontrol
-     vlc
-     nodejs
-     ffmpeg
+    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    #  wget
+    neovim
+    emacs
+    kitty
+    swww
+    rofi
+    mako
+    firefox
+    discord
+    curl
+    gcc
+    python311
+    ripgrep
+    bashmount
+    xfce.thunar
+    wineWowPackages.wayland
+    proxychains
+    networkmanagerapplet
+    pfetch
+    multimarkdown
+    fd
+    shellcheck
+    ranger
+    feh
+    waybar
+    cmus
+    grim
+    zip
+    unzip
+    cava
+    git
+    pavucontrol
+    vlc
+    nodejs
+    ffmpeg
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -181,11 +177,11 @@
   system.stateVersion = "23.05"; # Did you read the comment?
 
   # waybar
-    nixpkgs = {
+  nixpkgs = {
     overlays = [
       (self: super: {
         waybar = super.waybar.overrideAttrs (oldAttrs: {
-          mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" "-Dmpd=enabled" ];
+          mesonFlags = oldAttrs.mesonFlags ++ ["-Dexperimental=true" "-Dmpd=enabled"];
         });
       })
     ];
@@ -205,4 +201,3 @@
     emacs-all-the-icons-fonts
   ];
 }
-

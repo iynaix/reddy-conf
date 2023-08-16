@@ -1,0 +1,2 @@
+# panther specific nixos configuration
+{...}: {}
